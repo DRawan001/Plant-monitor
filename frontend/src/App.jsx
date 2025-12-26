@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./App.css";
-const API = "http://localhost:5000";
+const API = "https://plant-monitor-backend.onrender.com";
 
 export default function App() {
   const [moisture, setMoisture] = useState({ A: 0, B: 0, C: 0 });

@@ -10,20 +10,32 @@ export default function App() {
 
   // Fetch moisture data
   const fetchMoisture = async () => {
-    const res = await axios.get(`${API}/api/moisture`);
-    setMoisture(res.data);
+    try {
+      const res = await axios.get(`${API}/api/moisture`);
+      setMoisture(res.data);
+    } catch (err) {
+      console.error("Moisture API error:", err.message);
+    }
   };
 
   // Fetch system status
   const fetchStatus = async () => {
-    const res = await axios.get(`${API}/api/status`);
-    setSystemOn(res.data.status);
+    try {
+      const res = await axios.get(`${API}/api/status`);
+      setSystemOn(res.data.status);
+    } catch (err) {
+      console.error("Status API error:", err.message);
+    }
   };
 
   // Toggle system
   const toggleSystem = async () => {
-    const res = await axios.post(`${API}/api/toggle`);
-    setSystemOn(res.data.status);
+    try {
+      const res = await axios.post(`${API}/api/toggle`);
+      setSystemOn(res.data.status);
+    } catch (err) {
+      console.error("Toggle API error:", err.message);
+    }
   };
 
   useEffect(() => {
@@ -40,13 +52,12 @@ export default function App() {
 
         {/* HEADER */}
         <div className="flex justify-between items-center mb-8">
-          
+
           {/* ON / OFF BUTTON */}
           <button
             onClick={toggleSystem}
-            className={`px-6 py-2 rounded font-bold ${
-              systemOn ? "bg-green-600" : "bg-red-600"
-            }`}
+            className={`px-6 py-2 rounded font-bold ${systemOn ? "bg-green-600" : "bg-red-600"
+              }`}
           >
             {systemOn ? "ON" : "OFF"}
           </button>

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./App.css";
-const API = "https://plant-monitor-backend.onrender.com";
+const API = import.meta.env.VITE_API_URL;
+
 
 export default function App() {
   const [moisture, setMoisture] = useState({ A: 0, B: 0, C: 0 });

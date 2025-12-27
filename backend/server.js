@@ -8,53 +8,27 @@ app.use(
     methods: ["GET", "POST"],
   })
 );
-
 app.use(express.json());
 
-// ------------------ TEMP STORAGE ------------------
-let moistureData = {
-  A: 0,
-  B: 0,
-  C: 0
-};
+let wateringOn = false;
 
-let systemStatus = false; // false = OFF, true = ON
-// -------------------------------------------------
-
-// Health check
+/* Health check */
 app.get("/", (req, res) => {
-  res.send("Plant Monitoring Backend Running");
+  res.send("Plant Monitor Backend Running");
 });
 
-// ESP sends moisture data
-app.post("/api/moisture", (req, res) => {
-  const { A, B, C } = req.body;
-
-  if (A !== undefined) moistureData.A = A;
-  if (B !== undefined) moistureData.B = B;
-  if (C !== undefined) moistureData.C = C;
-
-  res.json({ message: "Moisture data updated", moistureData });
-});
-
-// Frontend gets moisture data
-app.get("/api/moisture", (req, res) => {
-  res.json(moistureData);
-});
-
-// Toggle ON/OFF button
-app.post("/api/toggle", (req, res) => {
-  systemStatus = !systemStatus;
-  res.json({ status: systemStatus });
-});
-
-// Get ON/OFF status
+/* Get watering status */
 app.get("/api/status", (req, res) => {
-  res.json({ status: systemStatus });
+  res.json({ watering: wateringOn });
 });
 
-// ------------------ SERVER ------------------
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+/* Toggle watering */
+app.post("/api/toggle", (req, res) => {
+  wateringOn = !wateringOn;
+  res.json({ watering: wateringOn });
 });
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () =>
+  console.log(`Server running on port ${PORT}`)
+);

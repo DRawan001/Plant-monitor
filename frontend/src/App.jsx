@@ -1,50 +1,33 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "./App.css";
-const API = import.meta.env.VITE_API_URL;
 
+const API = import.meta.env.VITE_API_URL;
+axios.defaults.timeout = 30000;
 
 export default function App() {
-  const [moisture, setMoisture] = useState({ A: 0, B: 0, C: 0 });
-  const [systemOn, setSystemOn] = useState(false);
+  const [watering, setWatering] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
 
-  // Fetch moisture data
-  const fetchMoisture = async () => {
-    try {
-      const res = await axios.get(`${API}/api/moisture`);
-      setMoisture(res.data);
-    } catch (err) {
-      console.error("Moisture API error:", err.message);
-    }
-  };
-
-  // Fetch system status
   const fetchStatus = async () => {
     try {
       const res = await axios.get(`${API}/api/status`);
-      setSystemOn(res.data.status);
+      setWatering(res.data.watering);
     } catch (err) {
-      console.error("Status API error:", err.message);
+      console.error("Status error:", err.message);
     }
   };
 
-  // Toggle system
-  const toggleSystem = async () => {
+  const toggleWatering = async () => {
     try {
       const res = await axios.post(`${API}/api/toggle`);
-      setSystemOn(res.data.status);
+      setWatering(res.data.watering);
     } catch (err) {
-      console.error("Toggle API error:", err.message);
+      console.error("Toggle error:", err.message);
     }
   };
 
   useEffect(() => {
-    fetchMoisture();
     fetchStatus();
-
-    const interval = setInterval(fetchMoisture, 3000);
-    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -52,15 +35,16 @@ export default function App() {
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white p-6">
 
         {/* HEADER */}
-        <div className="flex justify-between items-center mb-8">
-
+        <div className="flex justify-between items-center mb-10">
+          
           {/* ON / OFF BUTTON */}
           <button
-            onClick={toggleSystem}
-            className={`px-6 py-2 rounded font-bold ${systemOn ? "bg-green-600" : "bg-red-600"
-              }`}
+            onClick={toggleWatering}
+            className={`px-6 py-2 rounded font-bold ${
+              watering ? "bg-green-600" : "bg-red-600"
+            }`}
           >
-            {systemOn ? "ON" : "OFF"}
+            {watering ? "ON" : "OFF"}
           </button>
 
           {/* THEME TOGGLE */}
@@ -72,22 +56,13 @@ export default function App() {
           </button>
         </div>
 
-        {/* PLANT CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {["A", "B", "C"].map((plant) => (
-            <div
-              key={plant}
-              className="bg-white dark:bg-gray-800 p-6 rounded shadow text-center"
-            >
-              <h2 className="text-xl font-bold mb-4">Plant {plant}</h2>
-              <p className="text-3xl font-semibold">
-                {moisture[plant]} %
-              </p>
-              <p className="mt-2 text-sm text-gray-500">
-                Soil Moisture Level
-              </p>
-            </div>
-          ))}
+        {/* STATUS TEXT */}
+        <div className="text-center mt-20">
+          <h1 className="text-3xl font-bold">
+            {watering
+              ? "Watering the plants"
+              : "Watering off"}
+          </h1>
         </div>
 
       </div>
